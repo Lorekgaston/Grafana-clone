@@ -7,6 +7,7 @@ const styledTitle = {
   fontWeight: 'bold',
   color: '#7b8088',
   mt: 2,
+  mb: 2,
 };
 
 const Header = ({ title }) => (

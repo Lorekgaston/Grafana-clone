@@ -17,7 +17,9 @@ const styledBadge = {
 
 const Badge = () => (
   <Box sx={styledBadge} component='span'>
-    <Typography variant='subtitle1'>2</Typography>
+    <Typography variant='subtitle1' fontWeight='bold'>
+      4
+    </Typography>
   </Box>
 );
 

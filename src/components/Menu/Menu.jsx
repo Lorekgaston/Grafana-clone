@@ -23,10 +23,10 @@ const Menu = () => (
     anchor='bottom'
   >
     <List>
-      <Link name='Dashboard'>
+      <Link path={'/'} name='Dashboard'>
         <DashboardIcon fontSize='large' />
       </Link>
-      <Link name='Alarms'>
+      <Link path={'/alarms'} name='Alarms'>
         <NotificationsIcon fontSize='large' />
       </Link>
     </List>
