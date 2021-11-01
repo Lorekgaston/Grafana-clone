@@ -9,7 +9,7 @@ const styledBadge = {
   borderRadius: '50%',
   padding: '2px',
   bgcolor: '#c9c9cf',
-  color: '#111217 ',
+  color: '#111217',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
