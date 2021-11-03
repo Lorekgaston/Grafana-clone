@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Box } from '@mui/system';
 import {
@@ -9,50 +9,12 @@ import {
   Typography,
 } from '@mui/material';
 
+import { useGlobalState } from '../../context/alarmscontext';
+import { setActiveAlarmCount } from '../../helpers/helpers';
 import Alarm from '../../components/Alarm/Alarm';
-
-const fakeData = [
-  {
-    _id: 1,
-    name: 'My Alarm',
-    source: 'server 1',
-    metrics: ['CPU Usage', 'Memory', 'FS Usage'],
-    trigger: 80,
-    paused: true,
-    firing: false,
-    normal: true,
-  },
-  {
-    _id: 2,
-    name: 'Your Alarm',
-    source: 'server 2',
-    metrics: ['CPU Usage', 'Memory', 'FS Usage'],
-    trigger: 30,
-    paused: false,
-    firing: true,
-    normal: false,
-  },
-  {
-    _id: 3,
-    name: 'Our Alarm',
-    source: 'server 3',
-    metrics: ['CPU Usage', 'Memory', 'FS Usage'],
-    trigger: 20,
-    paused: true,
-    firing: true,
-    normal: false,
-  },
-  {
-    _id: 4,
-    name: 'new Alarm',
-    source: 'server 3',
-    metrics: ['CPU Usage', 'Memory', 'FS Usage'],
-    trigger: 50,
-    paused: true,
-    firing: true,
-    normal: false,
-  },
-];
+import useAlarmList from '../../hooks/useAlarmList';
+import Loader from '../../components/Loader/Loader';
+import axios from 'axios';
 
 const tableHead = [
   'Name',
@@ -62,7 +24,6 @@ const tableHead = [
   'Status',
   '',
 ];
-
 const styledTableHead = {
   display: 'grid',
   gridTemplateColumns: 'repeat(5, 217px) auto',
@@ -71,9 +32,77 @@ const StyledDivider = {
   bgcolor: '#7b8088',
 };
 
+const URL = process.env.REACT_APP_FAKE_SERVER_URL;
+
 const AlarmList = () => {
+  const [url, setUrl] = useState('');
+  const [state, setState] = useGlobalState();
+  const { isLoading, isError } = useAlarmList(url);
+
+  const pausedAlarmHandler = (id) => {
+    let copiedList = [...state.alarms];
+    const alarmIndex = state.alarms.findIndex(
+      (obj) => obj._id === id
+    );
+    copiedList[alarmIndex] = {
+      ...copiedList[alarmIndex],
+      paused: !copiedList[alarmIndex].paused,
+    };
+
+    pauseAlarm(
+      copiedList,
+      setActiveAlarmCount(copiedList, true)
+    );
+  };
+  const deleteAlarmHandler = (id) => {
+    const copiedList = [...state.alarms];
+    const filteredList = copiedList.filter(
+      (alarm) => alarm._id !== id
+    );
+    deleteAlarm(
+      id,
+      filteredList,
+      setActiveAlarmCount(filteredList, true)
+    );
+  };
+
+  const deleteAlarm = async (id, filteredList, count) => {
+    try {
+      await axios.delete(
+        `${process.env.REACT_APP_FAKE_SERVER_URL}/alarms?id=${id}`
+      );
+
+      setState({
+        ...state,
+        alarms: filteredList,
+        activeAlarmsCount: count,
+      });
+    } catch (error) {
+      throw new Error(
+        `Error deleting User with Id ${id}: `,
+        error
+      );
+    }
+  };
+
+  const pauseAlarm = async (updatedList, newCount) => {
+    try {
+      await axios.put(`${URL}/alarms`, updatedList);
+      setState({
+        ...state,
+        alarms: updatedList,
+        activeAlarmsCount: newCount,
+      });
+    } catch (error) {
+      throw new Error(`Error updating Alarm: `, error);
+    }
+  };
+
+  useEffect(() => setUrl('alarms'), []);
+
   return (
     <>
+      {isError && <span>Error!</span>}
       <Box component='section'>
         <ListItem sx={styledTableHead}>
           {tableHead.map((item, idx) => (
@@ -84,13 +113,23 @@ const AlarmList = () => {
         </ListItem>
       </Box>
       <Divider sx={StyledDivider} variant='fullWidth' />
-      <Box component='section'>
-        <List>
-          {fakeData.map(({ _id, ...rest }, idx) => (
-            <Alarm key={idx} id={_id} {...rest} />
-          ))}
-        </List>
-      </Box>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <Box component='section'>
+          <List>
+            {state.alarms.map(({ _id, ...rest }, idx) => (
+              <Alarm
+                key={idx}
+                id={_id}
+                {...rest}
+                handlePause={pausedAlarmHandler}
+                handleDelete={deleteAlarmHandler}
+              />
+            ))}
+          </List>
+        </Box>
+      )}
     </>
   );
 };

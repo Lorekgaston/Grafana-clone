@@ -15,10 +15,10 @@ const styledBadge = {
   alignItems: 'center',
 };
 
-const Badge = () => (
+const Badge = ({ count }) => (
   <Box sx={styledBadge} component='span'>
     <Typography variant='subtitle1' fontWeight='bold'>
-      4
+      {count}
     </Typography>
   </Box>
 );

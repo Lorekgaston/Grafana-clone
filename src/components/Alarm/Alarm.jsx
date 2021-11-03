@@ -22,13 +22,13 @@ const Alarm = ({
   metrics,
   trigger,
   paused,
+  handlePause,
+  handleDelete,
 }) => (
   <ListItem sx={styledListItem}>
     <ListItemText>{name}</ListItemText>
     <ListItemText>{source}</ListItemText>
-    <ListItemText>
-      {metrics[Math.floor(Math.random() * 3)]}
-    </ListItemText>
+    <ListItemText>{metrics}</ListItemText>
     <ListItemText>{trigger}%</ListItemText>
     <ListItemText>
       {!paused ? 'Paused' : 'Active'}
@@ -45,6 +45,7 @@ const Alarm = ({
         variant='outlined'
         color='error'
         sx={styledButton}
+        onClick={() => handleDelete(id)}
       >
         Delete
       </Button>
@@ -52,6 +53,7 @@ const Alarm = ({
         variant='outlined'
         color='warning'
         sx={styledButton}
+        onClick={() => handlePause(id)}
       >
         {!paused ? 'Resume' : 'Pause'}
       </Button>

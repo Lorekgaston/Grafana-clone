@@ -3,7 +3,7 @@ import React from 'react';
 import { Box } from '@mui/system';
 
 import Menu from '../Menu/Menu';
-import TopBar from '../TopBar/TopBar';
+import TopBar from '../../containers/TopBar/TopBar';
 
 const styledLayout = { height: '100vh', display: 'flex' };
 const styledMain = {
