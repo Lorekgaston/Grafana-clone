@@ -10,10 +10,10 @@ const stledLoader = {
   alignItems: 'center',
 };
 
-const Loader = () => {
+const Loader = ({ theme = 'warning' }) => {
   return (
     <Box sx={stledLoader} component='section'>
-      <CircularProgress size={25} color='warning' />
+      <CircularProgress size={25} color={theme} />
     </Box>
   );
 };

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { useGlobalState } from '../context/alarmscontext';
+import { toastError } from '../helpers/toasts';
 
 const URL = process.env.REACT_APP_FAKE_SERVER_URL;
 const countUrl = `${process.env.REACT_APP_FAKE_SERVER_URL}/alarms/count`;
@@ -10,7 +11,6 @@ const countUrl = `${process.env.REACT_APP_FAKE_SERVER_URL}/alarms/count`;
 const useAlarmList = (params) => {
   const [state, setState] = useGlobalState();
   const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
 
   const getAlarmList = async () => {
     setIsLoading(true);
@@ -23,9 +23,10 @@ const useAlarmList = (params) => {
             headers: {
               'Content-Type': 'application/json',
             },
-          }).catch((err) =>
-            console.log(err, 'something went wrong')
-          )
+          }).catch((err) => {
+            console.log(err, 'something went wrong');
+            setIsLoading(false);
+          })
       );
       const [alarmList, count] = await axios.all(requests);
       if (alarmList && count) {
@@ -38,21 +39,12 @@ const useAlarmList = (params) => {
         });
       }
     } catch (error) {
-      setIsLoading(false);
-      setIsError(true);
-      throw new Error(
-        `Error when triying to get data`,
-        error
-      );
+      toastError('Something Went wrong fetching the list!');
     }
   };
-
   useEffect(() => getAlarmList(), [params]);
 
-  return {
-    isLoading,
-    isError,
-  };
+  return [isLoading];
 };
 
 export default useAlarmList;

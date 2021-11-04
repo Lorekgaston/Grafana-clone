@@ -78,10 +78,12 @@ export const handlers = [
   rest.delete(`${URL}/alarms`, (req, res, ctx) => {
     const id = req.url.searchParams.get('id');
     const list = handleGetItemFromStorage('alarmList');
-    handleSetItemToStorage(
-      'alarmList',
-      list.filter((obj) => obj._id !== id)
+
+    const filteredList = list.filter(
+      (obj) => obj._id !== Number(id)
     );
+    console.log(filteredList, 'delete');
+    handleSetItemToStorage('alarmList', filteredList);
     return res(ctx.json(`Alarm succesfully deleted`));
   }),
 ];

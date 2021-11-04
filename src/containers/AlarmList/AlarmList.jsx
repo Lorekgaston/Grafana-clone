@@ -11,6 +11,13 @@ import {
 
 import { useGlobalState } from '../../context/alarmscontext';
 import { setActiveAlarmCount } from '../../helpers/helpers';
+import { ToastContainer } from 'react-toastify';
+import {
+  toastPending,
+  toastError,
+} from '../../helpers/toasts';
+import 'react-toastify/dist/ReactToastify.css';
+
 import Alarm from '../../components/Alarm/Alarm';
 import useAlarmList from '../../hooks/useAlarmList';
 import Loader from '../../components/Loader/Loader';
@@ -37,7 +44,7 @@ const URL = process.env.REACT_APP_FAKE_SERVER_URL;
 const AlarmList = () => {
   const [url, setUrl] = useState('');
   const [state, setState] = useGlobalState();
-  const { isLoading, isError } = useAlarmList(url);
+  const [isLoading] = useAlarmList(url);
 
   const pausedAlarmHandler = (id) => {
     let copiedList = [...state.alarms];
@@ -48,7 +55,13 @@ const AlarmList = () => {
       ...copiedList[alarmIndex],
       paused: !copiedList[alarmIndex].paused,
     };
-
+    toastPending(
+      `${
+        !copiedList[alarmIndex].paused
+          ? 'Pausing'
+          : 'Activating'
+      } Alarm, Please Wait..`
+    );
     pauseAlarm(
       copiedList,
       setActiveAlarmCount(copiedList, true)
@@ -59,6 +72,7 @@ const AlarmList = () => {
     const filteredList = copiedList.filter(
       (alarm) => alarm._id !== id
     );
+    toastPending('Deleting Alarm, Please Wait..');
     deleteAlarm(
       id,
       filteredList,
@@ -71,38 +85,40 @@ const AlarmList = () => {
       await axios.delete(
         `${process.env.REACT_APP_FAKE_SERVER_URL}/alarms?id=${id}`
       );
-
-      setState({
-        ...state,
-        alarms: filteredList,
-        activeAlarmsCount: count,
-      });
-    } catch (error) {
-      throw new Error(
-        `Error deleting User with Id ${id}: `,
-        error
+      setTimeout(
+        () =>
+          setState({
+            ...state,
+            alarms: filteredList,
+            activeAlarmsCount: count,
+          }),
+        2100
       );
+    } catch (error) {
+      toastError('Error could not delete alarm!');
     }
   };
 
   const pauseAlarm = async (updatedList, newCount) => {
     try {
       await axios.put(`${URL}/alarms`, updatedList);
-      setState({
-        ...state,
-        alarms: updatedList,
-        activeAlarmsCount: newCount,
-      });
+      setTimeout(
+        () =>
+          setState({
+            ...state,
+            alarms: updatedList,
+            activeAlarmsCount: newCount,
+          }),
+        2100
+      );
     } catch (error) {
-      throw new Error(`Error updating Alarm: `, error);
+      toastError('Error could not delete alarm!');
     }
   };
 
   useEffect(() => setUrl('alarms'), []);
-
   return (
     <>
-      {isError && <span>Error!</span>}
       <Box component='section'>
         <ListItem sx={styledTableHead}>
           {tableHead.map((item, idx) => (
@@ -130,6 +146,7 @@ const AlarmList = () => {
           </List>
         </Box>
       )}
+      <ToastContainer limit={2} />
     </>
   );
 };
