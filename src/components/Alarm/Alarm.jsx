@@ -31,7 +31,7 @@ const Alarm = ({
     <ListItemText>{metrics}</ListItemText>
     <ListItemText>{trigger}%</ListItemText>
     <ListItemText>
-      {!paused ? 'Paused' : 'Active'}
+      {!paused ? 'Active' : 'Paused'}
     </ListItemText>
     <Box component='div'>
       <Button
@@ -55,7 +55,7 @@ const Alarm = ({
         sx={styledButton}
         onClick={() => handlePause(id)}
       >
-        {!paused ? 'Resume' : 'Pause'}
+        {!paused ? 'Pause' : 'Resume'}
       </Button>
     </Box>
   </ListItem>

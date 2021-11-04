@@ -1,10 +1,11 @@
 import { rest } from 'msw';
+import { v4 } from 'uuid';
 
 const URL = process.env.REACT_APP_FAKE_SERVER_URL;
 
 const fakeData = [
   {
-    _id: 1,
+    _id: v4(),
     name: 'My Alarm',
     source: 'server 1',
     metrics: 'Memory',
@@ -14,7 +15,7 @@ const fakeData = [
     normal: true,
   },
   {
-    _id: 2,
+    _id: v4(),
     name: 'Your Alarm',
     source: 'server 2',
     metrics: 'FS Usage',
@@ -24,7 +25,7 @@ const fakeData = [
     normal: false,
   },
   {
-    _id: 3,
+    _id: v4(),
     name: 'Our Alarm',
     source: 'server 3',
     metrics: 'CPU Usage',
@@ -34,7 +35,7 @@ const fakeData = [
     normal: false,
   },
   {
-    _id: 4,
+    _id: v4(),
     name: 'new Alarm',
     source: 'server 3',
     metrics: 'CPU Usage',
@@ -80,7 +81,7 @@ export const handlers = [
     const list = handleGetItemFromStorage('alarmList');
 
     const filteredList = list.filter(
-      (obj) => obj._id !== Number(id)
+      (obj) => obj._id !== id
     );
     console.log(filteredList, 'delete');
     handleSetItemToStorage('alarmList', filteredList);
