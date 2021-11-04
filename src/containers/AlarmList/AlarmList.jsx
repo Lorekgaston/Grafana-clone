@@ -16,12 +16,13 @@ import {
   toastPending,
   toastError,
 } from '../../helpers/toasts';
+import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Alarm from '../../components/Alarm/Alarm';
 import useAlarmList from '../../hooks/useAlarmList';
 import Loader from '../../components/Loader/Loader';
-import axios from 'axios';
+import AddButton from '../../components/AddButton/AddButton';
 
 const tableHead = [
   'Name',
@@ -38,8 +39,6 @@ const styledTableHead = {
 const StyledDivider = {
   bgcolor: '#7b8088',
 };
-
-const URL = process.env.REACT_APP_FAKE_SERVER_URL;
 
 const AlarmList = () => {
   const [url, setUrl] = useState('');
@@ -62,10 +61,17 @@ const AlarmList = () => {
           : 'Activating'
       } Alarm, Please Wait..`
     );
-    pauseAlarm(
-      copiedList,
-      setActiveAlarmCount(copiedList, true)
-    );
+    handleApiAction({
+      message: "Error has ocurred, Can't pause Alarm",
+      filteredList: copiedList,
+      count: setActiveAlarmCount(
+        copiedList,
+        'paused',
+        true
+      ),
+      method: 'put',
+      endpoint: `/alarms`,
+    });
   };
   const deleteAlarmHandler = (id) => {
     const copiedList = [...state.alarms];
@@ -73,17 +79,33 @@ const AlarmList = () => {
       (alarm) => alarm._id !== id
     );
     toastPending('Deleting Alarm, Please Wait..');
-    deleteAlarm(
-      id,
+    handleApiAction({
+      message: "Error has ocurred, Can't delete Alarm",
       filteredList,
-      setActiveAlarmCount(filteredList, true)
-    );
+      count: setActiveAlarmCount(
+        filteredList,
+        'paused',
+        true
+      ),
+      method: 'delete',
+      endpoint: `/alarms?id=${id}`,
+    });
   };
 
-  const deleteAlarm = async (id, filteredList, count) => {
+  const handleApiAction = async ({
+    message,
+    filteredList,
+    count,
+    method,
+    endpoint,
+  }) => {
     try {
-      await axios.delete(
-        `${process.env.REACT_APP_FAKE_SERVER_URL}/alarms?id=${id}`
+      await axios(
+        `${process.env.REACT_APP_FAKE_SERVER_URL}${endpoint}`,
+        {
+          method: method,
+          data: filteredList,
+        }
       );
       setTimeout(
         () =>
@@ -94,25 +116,8 @@ const AlarmList = () => {
           }),
         2100
       );
-    } catch (error) {
-      toastError('Error could not delete alarm!');
-    }
-  };
-
-  const pauseAlarm = async (updatedList, newCount) => {
-    try {
-      await axios.put(`${URL}/alarms`, updatedList);
-      setTimeout(
-        () =>
-          setState({
-            ...state,
-            alarms: updatedList,
-            activeAlarmsCount: newCount,
-          }),
-        2100
-      );
-    } catch (error) {
-      toastError('Error could not delete alarm!');
+    } catch (err) {
+      toastError(message);
     }
   };
 
@@ -146,6 +151,7 @@ const AlarmList = () => {
           </List>
         </Box>
       )}
+      <AddButton />
       <ToastContainer limit={2} />
     </>
   );

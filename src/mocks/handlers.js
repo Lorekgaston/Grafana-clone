@@ -66,12 +66,13 @@ export const handlers = [
   // Get active/nonPaused alarms count
   rest.get(`${URL}/alarms/count`, (req, res, ctx) => {
     const list = handleGetItemFromStorage('alarmList');
-    const count = list.filter((obj) => obj.paused === true);
+    const count = list.filter((obj) => obj.paused !== true);
     return res(ctx.json(count.length));
   }),
   // update Alarm
   rest.put(`${URL}/alarms`, (req, res, ctx) => {
     const updateList = req.body;
+    console.log(updateList);
     handleSetItemToStorage('alarmList', updateList);
     return res(ctx.json(`user succesfully updated`));
   }),

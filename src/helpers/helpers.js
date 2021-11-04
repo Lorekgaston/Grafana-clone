@@ -1,6 +1,6 @@
-export const setActiveAlarmCount = (list, val) => {
+export const setActiveAlarmCount = (list, key, val) => {
   const filteredList = list.filter(
-    (obj) => obj.paused === val
+    (obj) => obj[key] !== val
   );
-  return filteredList.length;
+  return Number(filteredList.length);
 };
