@@ -14,15 +14,16 @@ const StyledSpeedDial = {
       bgcolor: '#22252b',
       color: '#7b8088',
       '& :hover': {
-        bgcolor: 'inherit',
-        color: 'inherit',
+        bgcolor: '#22252b',
+        color: '#7b8088',
       },
     },
 };
 
-const AddButton = () => (
+const AddButton = ({ handleAddAlarm }) => (
   <>
     <SpeedDial
+      onClick={() => handleAddAlarm()}
       ariaLabel='SpeedDial'
       sx={StyledSpeedDial}
       icon={<SpeedDialIcon openIcon={<EditIcon />} />}

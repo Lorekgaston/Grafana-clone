@@ -10,7 +10,10 @@ import {
 } from '@mui/material';
 
 import { useGlobalState } from '../../context/alarmscontext';
-import { setActiveAlarmCount } from '../../helpers/helpers';
+import {
+  setActiveAlarmCount,
+  getIndex,
+} from '../../helpers/helpers';
 import { ToastContainer } from 'react-toastify';
 import {
   toastPending,
@@ -47,9 +50,8 @@ const AlarmList = () => {
 
   const pausedAlarmHandler = (id) => {
     let copiedList = [...state.alarms];
-    const alarmIndex = state.alarms.findIndex(
-      (obj) => obj._id === id
-    );
+    const alarmIndex = getIndex(copiedList, '_id', id);
+
     copiedList[alarmIndex] = {
       ...copiedList[alarmIndex],
       paused: !copiedList[alarmIndex].paused,
@@ -89,6 +91,24 @@ const AlarmList = () => {
       ),
       method: 'delete',
       endpoint: `/alarms?id=${id}`,
+    });
+  };
+  const editHandler = (id) => {
+    const copiedList = [...state.alarms];
+    const alarmIndex = getIndex(copiedList, '_id', id);
+    setState({
+      ...state,
+      isFormOpen: true,
+      isEditing: true,
+      currentEditingAlarm: copiedList[alarmIndex],
+    });
+  };
+  const addAlarmHandler = () => {
+    setState({
+      ...state,
+      isFormOpen: true,
+      isEditing: false,
+      currentEditingAlarm: {},
     });
   };
 
@@ -146,12 +166,13 @@ const AlarmList = () => {
                 {...rest}
                 handlePause={pausedAlarmHandler}
                 handleDelete={deleteAlarmHandler}
+                handleEdit={editHandler}
               />
             ))}
           </List>
         </Box>
       )}
-      <AddButton />
+      <AddButton handleAddAlarm={addAlarmHandler} />
       <ToastContainer limit={2} />
     </>
   );

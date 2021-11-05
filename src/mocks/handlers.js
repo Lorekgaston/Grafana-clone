@@ -8,41 +8,41 @@ const fakeData = [
     _id: v4(),
     name: 'My Alarm',
     source: 'server 1',
-    metrics: 'Memory',
+    metric: 'Memory usage',
     trigger: 20,
     paused: true,
     firing: false,
-    normal: true,
+    metricValue: 80,
   },
   {
     _id: v4(),
     name: 'Your Alarm',
     source: 'server 2',
-    metrics: 'FS Usage',
+    metric: 'FS usage',
     trigger: 80,
     paused: false,
     firing: true,
-    normal: false,
+    metricValue: 55,
   },
   {
     _id: v4(),
     name: 'Our Alarm',
     source: 'server 3',
-    metrics: 'CPU Usage',
+    metric: 'CPU usage',
     trigger: 60,
     paused: true,
     firing: true,
-    normal: false,
+    metricValue: 80,
   },
   {
     _id: v4(),
     name: 'new Alarm',
     source: 'server 3',
-    metrics: 'CPU Usage',
+    metric: 'CPU usage',
     trigger: 30,
     paused: true,
     firing: true,
-    normal: false,
+    metricValue: 80,
   },
 ];
 
@@ -87,5 +87,14 @@ export const handlers = [
     console.log(filteredList, 'delete');
     handleSetItemToStorage('alarmList', filteredList);
     return res(ctx.json(`Alarm succesfully deleted`));
+  }),
+  rest.post(`${URL}/alarms`, (req, res, ctx) => {
+    const newAlarm = req.body;
+    const list = handleGetItemFromStorage('alarmList');
+    handleSetItemToStorage('alarmList', [
+      ...list,
+      newAlarm,
+    ]);
+    return res(ctx.json('successfully added a new alarm'));
   }),
 ];

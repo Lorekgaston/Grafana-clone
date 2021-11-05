@@ -19,16 +19,17 @@ const Alarm = ({
   id,
   name,
   source,
-  metrics,
+  metric,
   trigger,
   paused,
   handlePause,
   handleDelete,
+  handleEdit,
 }) => (
   <ListItem sx={styledListItem}>
     <ListItemText>{name}</ListItemText>
     <ListItemText>{source}</ListItemText>
-    <ListItemText>{metrics}</ListItemText>
+    <ListItemText>{metric}</ListItemText>
     <ListItemText>{trigger}%</ListItemText>
     <ListItemText>
       {!paused ? 'Active' : 'Paused'}
@@ -38,6 +39,7 @@ const Alarm = ({
         variant='outlined'
         color='primary'
         sx={styledButton}
+        onClick={() => handleEdit(id)}
       >
         Edit
       </Button>

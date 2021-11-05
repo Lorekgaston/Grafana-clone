@@ -8,6 +8,9 @@ const initialState = {
   alarms: [],
   totalAlarmsCount: '',
   activeAlarmsCount: '',
+  isFormOpen: false,
+  isEditing: false,
+  currentEditingAlarm: {},
 };
 
 const useAlarmState = () => useState({ ...initialState });

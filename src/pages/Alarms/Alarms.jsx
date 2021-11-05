@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/system';
 import AlarmList from '../../containers/AlarmList/AlarmList';
+import Form from '../../containers/Form/Form';
 
 const styledAlarms = {
   background: '#181b1f',
@@ -15,6 +16,7 @@ const Alarms = () => (
   <Box sx={styledAlarms} component='section'>
     {/* Filters */}
     <AlarmList />
+    <Form />
   </Box>
 );
 
