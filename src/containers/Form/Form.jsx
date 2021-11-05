@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+import { Box } from '@mui/system';
 import {
   Button,
   Dialog,
@@ -7,23 +8,22 @@ import {
   DialogContent,
   DialogTitle,
 } from '@mui/material';
-import { Box } from '@mui/system';
+import { v4 } from 'uuid';
+import axios from 'axios';
 
 import { useGlobalState } from '../../context/alarmscontext';
-import { v4 } from 'uuid';
 import {
   getIndex,
   handleObject,
   triggers,
 } from '../../helpers/helpers';
-
-import TextInput from '../../components/TextInput/TextInput';
-import SelectInput from '../../components/SelectInput/SelectInput';
 import {
   toastError,
   toastPending,
 } from '../../helpers/toasts';
-import axios from 'axios';
+
+import TextInput from '../../components/TextInput/TextInput';
+import SelectInput from '../../components/SelectInput/SelectInput';
 
 const metricsList = [
   'CPU usage',

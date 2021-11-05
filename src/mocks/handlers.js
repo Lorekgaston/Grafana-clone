@@ -1,6 +1,11 @@
 import { rest } from 'msw';
 import { v4 } from 'uuid';
 
+import {
+  handleSetItemToStorage,
+  handleGetItemFromStorage,
+} from '../helpers/helpers';
+
 const URL = process.env.REACT_APP_FAKE_SERVER_URL;
 
 const fakeData = [
@@ -51,12 +56,6 @@ sessionStorage.setItem(
   JSON.stringify(fakeData)
 );
 
-const handleGetItemFromStorage = (item) =>
-  JSON.parse(sessionStorage.getItem(item));
-
-const handleSetItemToStorage = (item, data) =>
-  sessionStorage.setItem(item, JSON.stringify(data));
-
 export const handlers = [
   // Get Alarms List
   rest.get(`${URL}/alarms`, (req, res, ctx) => {
@@ -67,7 +66,7 @@ export const handlers = [
   rest.get(`${URL}/alarms/count`, (req, res, ctx) => {
     const list = handleGetItemFromStorage('alarmList');
     const count = list.filter((obj) => obj.paused !== true);
-    return res(ctx.json(count.length));
+    return res(ctx.json(Number(count.length)));
   }),
   // update Alarm
   rest.put(`${URL}/alarms`, (req, res, ctx) => {
@@ -88,6 +87,7 @@ export const handlers = [
     handleSetItemToStorage('alarmList', filteredList);
     return res(ctx.json(`Alarm succesfully deleted`));
   }),
+  // Create new Alarm
   rest.post(`${URL}/alarms`, (req, res, ctx) => {
     const newAlarm = req.body;
     const list = handleGetItemFromStorage('alarmList');
@@ -96,5 +96,25 @@ export const handlers = [
       newAlarm,
     ]);
     return res(ctx.json('successfully added a new alarm'));
+  }),
+  // Filter Alarm by Status Active or Pause
+  rest.get(`${URL}/filter`, (req, res, ctx) => {
+    const key = req.url.searchParams.get('status');
+    const list = handleGetItemFromStorage('alarmList');
+    const filteredData = list.filter(
+      (obj) => !obj.paused === Boolean(key)
+    );
+    return res(ctx.delay(500), ctx.json(filteredData));
+  }),
+
+  // Search Alarm by name
+  rest.get(`${URL}/search`, (req, res, ctx) => {
+    const name = req.url.searchParams.get('name');
+    const list = handleGetItemFromStorage('alarmList');
+    const filteredData = list.filter((obj) =>
+      obj.name.toLowerCase().includes(name.toLowerCase())
+    );
+
+    return res(ctx.delay(500), ctx.json(filteredData));
   }),
 ];

@@ -29,3 +29,9 @@ export const handleObject = (stateObj) => {
   completedForm = { ...completedForm, ...alarmObj };
   return completedForm;
 };
+
+export const handleGetItemFromStorage = (item) =>
+  JSON.parse(sessionStorage.getItem(item));
+
+export const handleSetItemToStorage = (item, data) =>
+  sessionStorage.setItem(item, JSON.stringify(data));
