@@ -2,20 +2,26 @@
 
 ## Setup
 
+Clone repository
+
+```
+https://github.com/Lorekgaston/Grafana-clone.git
+```
+
 To run this project, install it locally using npm:
 
 ```
-$ cd ../lorem
+$ cd ../folder
 $ npm install
 $ npm start
 ```
 
-# or
+### or
 
 To run this project, install it locally using Yarn:
 
 ```
-$ cd ../lorem
+$ cd ../folder
 $ yarn install
 $ yarn start
 ```
