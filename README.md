@@ -26,6 +26,8 @@ $ yarn install
 $ yarn start
 ```
 
+Create .env file and copy paste "REACT_APP_FAKE_SERVER_URL='http://localhost:8000'"
+
 ## Technologies
 
 Project is created with:
