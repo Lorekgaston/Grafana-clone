@@ -8,8 +8,6 @@ import useAlarmList from '../../hooks/useAlarmList';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import StatusFilter from '../../components/StatusFilter/StatusFilter';
 
-const URL = process.env.REACT_APP_FAKE_SERVER_URL;
-
 const AlarmFilters = () => {
   const [filterState, setFilterState] = useState({
     searchValue: '',

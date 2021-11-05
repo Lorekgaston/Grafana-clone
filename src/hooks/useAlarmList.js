@@ -30,7 +30,6 @@ const useAlarmList = (params) => {
       );
       const [alarmList, count] = await axios.all(requests);
       if (alarmList && count) {
-        setTimeout(() => setIsLoading(false), 500);
         setState({
           ...state,
           alarms: alarmList.data,
@@ -40,6 +39,8 @@ const useAlarmList = (params) => {
       }
     } catch (error) {
       toastError('Something Went wrong fetching the list!');
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => getAlarmList(), [params]);
