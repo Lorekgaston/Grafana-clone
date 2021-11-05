@@ -30,6 +30,14 @@ const metricsList = [
   'Memory usage',
   'FS usage',
 ];
+const sourceList = [
+  'server 5',
+  'server 6',
+  'server 7',
+  'server 8',
+  'server 9',
+  'server 10',
+];
 
 const URL = process.env.REACT_APP_FAKE_SERVER_URL;
 
@@ -167,11 +175,12 @@ function Form() {
             label='Alarm Name'
             value={formState.name.value}
           />
-          <TextInput
-            handleChandge={changeHandler}
+          <SelectInput
+            handleChange={changeHandler}
             name='source'
             label='Metric Source'
             value={formState.source.value}
+            options={sourceList}
           />
           <SelectInput
             handleChange={changeHandler}

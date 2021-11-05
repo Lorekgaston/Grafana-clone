@@ -22,6 +22,7 @@ const Alarm = ({
   metric,
   trigger,
   paused,
+  firing,
   handlePause,
   handleDelete,
   handleEdit,
@@ -51,14 +52,24 @@ const Alarm = ({
       >
         Delete
       </Button>
-      <Button
-        variant='outlined'
-        color='warning'
-        sx={styledButton}
-        onClick={() => handlePause(id)}
-      >
-        {!paused ? 'Pause' : 'Resume'}
-      </Button>
+      {firing ? (
+        <Button
+          variant='contained'
+          color='error'
+          sx={styledButton}
+        >
+          Firing
+        </Button>
+      ) : (
+        <Button
+          variant='outlined'
+          color='warning'
+          sx={styledButton}
+          onClick={() => handlePause(id)}
+        >
+          {!paused ? 'Pause' : 'Resume'}
+        </Button>
+      )}
     </Box>
   </ListItem>
 );

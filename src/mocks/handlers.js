@@ -7,6 +7,7 @@ import {
 } from '../helpers/helpers';
 
 const URL = process.env.REACT_APP_FAKE_SERVER_URL;
+const randomBool = () => Math.random() > 0.5;
 
 const fakeData = [
   {
@@ -15,8 +16,8 @@ const fakeData = [
     source: 'server 1',
     metric: 'Memory usage',
     trigger: 20,
+    firing: randomBool(),
     paused: true,
-    firing: false,
     metricValue: 80,
   },
   {
@@ -26,7 +27,7 @@ const fakeData = [
     metric: 'FS usage',
     trigger: 80,
     paused: false,
-    firing: true,
+    firing: randomBool(),
     metricValue: 55,
   },
   {
@@ -35,18 +36,18 @@ const fakeData = [
     source: 'server 3',
     metric: 'CPU usage',
     trigger: 60,
-    paused: true,
-    firing: true,
+    paused: false,
+    firing: randomBool(),
     metricValue: 80,
   },
   {
     _id: v4(),
     name: 'new Alarm',
-    source: 'server 3',
+    source: 'server 4',
     metric: 'CPU usage',
     trigger: 30,
     paused: true,
-    firing: true,
+    firing: randomBool(),
     metricValue: 80,
   },
 ];
@@ -60,6 +61,16 @@ export const handlers = [
   // Get Alarms List
   rest.get(`${URL}/alarms`, (req, res, ctx) => {
     const list = handleGetItemFromStorage('alarmList');
+    const newList = list.map((alarm) => {
+      alarm.firing = randomBool();
+      if (alarm.firing) {
+        alarm.paused = true;
+      }
+      return alarm;
+    });
+    handleSetItemToStorage('alarmList', list);
+    console.log(newList, list);
+
     return res(ctx.delay(), ctx.json(list));
   }),
   // Get active/nonPaused alarms count

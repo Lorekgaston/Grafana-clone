@@ -8,7 +8,7 @@ export const setActiveAlarmCount = (list, key, val) => {
 export const triggers = () => {
   const array = [];
   for (let i = 0; i < 100; i++) {
-    array.push(i.toString());
+    array.push(`${i}`);
   }
   return array;
 };
